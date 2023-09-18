@@ -1,17 +1,17 @@
-import { Text, TextInput, View, Image } from 'react-native'
+import { Text, TextInput, View, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import loginStyles from './LoginScreen.style'
 
-import { useSelector } from 'react-redux'
-import MessageBox from '../../shared/components/MessageBox'
+import { useSelector, useDispatch } from 'react-redux'
 import SubmitButton from '../../shared/components/SubmitButton'
+import { loginUser } from '../../store/UserSlice'
+import { onNavigate } from '../../navigation/RootNavigation'
 
-export default function LoginForm({ login }) {
-  const { onAuthenticate, onDismissError } = login()
-  const error = useSelector((state) => state.AppReducer.errorMessage)
-
+export default function LoginForm() {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const { loading, error } = useSelector((state) => state.user)
 
   const [inputErrors, setInputErrors] = useState({
     isValidEmail: '',
@@ -28,9 +28,10 @@ export default function LoginForm({ login }) {
     }
     return errors
   }
+
   useEffect(() => {
     if (error) {
-      MessageBox('Error', error.message, onDismissError).showAlert()
+      Alert.alert('Error', error)
     }
   }, [error])
 
@@ -40,7 +41,20 @@ export default function LoginForm({ login }) {
     if (Object.keys(errors).length > 0) {
       setInputErrors(errors)
     } else {
-      onAuthenticate(email, password)
+      let userCredentials = {
+        email,
+        password,
+      }
+      dispatch(loginUser(userCredentials)).then((result) => {
+        if (result.payload) {
+          setEmail('')
+          setPassword('')
+          onNavigate({
+            routeName: PATH.HOME,
+            isReplace: true,
+          })
+        }
+      })
     }
   }
 
@@ -99,7 +113,7 @@ export default function LoginForm({ login }) {
             }}
           >
             <SubmitButton
-              title={'Login'}
+              title={loading ? 'Loading..' : 'Login'}
               additionalSyle={{ backgroundColor: '#233d90' }}
               colorText={{ color: 'white' }}
               onSubmit={submitLogin}

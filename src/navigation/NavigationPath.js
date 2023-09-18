@@ -1,6 +1,7 @@
 export default PATH = {
   SPLASH: 'SPLASH',
-  HOME: 'HOME',
+  LANDING: 'LANDING',
   LOGIN: 'LOGIN',
   REGISTER: 'REGISTER',
+  HOME: 'HOME',
 }
