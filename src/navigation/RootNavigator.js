@@ -1,13 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
-import SplashScreen from '../screens/SplashScreen/SplashScreen'
 
 import PATH from './NavigationPath'
-import LoginScreen from '../screens/LoginScreen/LoginScreen'
 import { navigationRef } from './RootNavigation'
 import { Login } from '../screens/LoginScreen/Login'
 import LoginService from '../service/LoginService'
 import HomeScreen from '../screens/HomeScreen/HomeScreen'
+import SplashScreen from '../screens/SplashScreen/SplashScreen'
+import LoginScreen from '../screens/LoginScreen/LoginScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -30,6 +30,7 @@ const AppNavigation = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+
   )
 }
 
