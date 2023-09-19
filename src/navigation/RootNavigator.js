@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen/HomeScreen'
 import SplashScreen from '../screens/SplashScreen/SplashScreen'
 import LoginScreen from '../screens/LoginScreen/LoginScreen'
 import LandingScreen from '../screens/LandingScreen/LandingScreen'
+import RegisterForm from '../screens/RegisterScreen/RegisterScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +21,7 @@ const AppNavigation = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name={PATH.LOGIN} component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name={PATH.REGISTER} component={RegisterForm} options={{ headerShown: false }} />
         <Stack.Screen
           name={PATH.LANDING}
           component={LandingScreen}

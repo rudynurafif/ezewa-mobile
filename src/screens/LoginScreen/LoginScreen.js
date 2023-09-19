@@ -1,27 +1,35 @@
-import { Text, TextInput, View, Image, Alert } from 'react-native'
+import { Text, TextInput, View, Image, Alert, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import loginStyles from './LoginScreen.style'
-
+import { useNavigation } from '@react-navigation/native'
 import { useSelector, useDispatch } from 'react-redux'
 import SubmitButton from '../../shared/components/SubmitButton'
 import { loginUser } from '../../store/UserSlice'
 import { onNavigate } from '../../navigation/RootNavigation'
+import { Card } from 'react-native-elements'
+import PATH from '../../navigation/NavigationPath'
 
 export default function LoginForm() {
   const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { loading, error } = useSelector((state) => state.user)
-
+  const navigation = useNavigation()
   const [inputErrors, setInputErrors] = useState({
     isValidEmail: '',
     isValidPassword: '',
   })
 
+  const [isVendorLogin, setIsVendorLogin] = useState(false)
+
+  const toggleLoginType = () => {
+    setIsVendorLogin(!isVendorLogin)
+  }
+
   const validateInputs = () => {
     const errors = {}
     if (email.trim() === '') {
-      errors.isValidEmail = 'Username or email is required'
+      errors.isValidEmail = 'Email is required'
     }
     if (password.trim() === '') {
       errors.isValidPassword = 'Password is required'
@@ -44,6 +52,19 @@ export default function LoginForm() {
       let userCredentials = {
         email,
         password,
+      }
+
+      if (isVendorLogin) {
+        dispatch(loginUser(userCredentials)).then((result) => {
+          if (result.payload) {
+            setEmail('')
+            setPassword('')
+            onNavigate({
+              routeName: PATH.HOME,
+              isReplace: true,
+            })
+          }
+        })
       }
       dispatch(loginUser(userCredentials)).then((result) => {
         if (result.payload) {
@@ -76,50 +97,72 @@ export default function LoginForm() {
         />
       </View>
       <View style={{ flex: 2, paddingHorizontal: 15 }}>
-        <View style={loginStyles.form}>
-          <View style={loginStyles.headerForm}>
-            <Text style={loginStyles.title}>Welcome to Ezewa!</Text>
-          </View>
-          <Text style={loginStyles.label}>Email</Text>
-          <TextInput
-            onChangeText={(val) => {
-              setEmail(val)
-              setInputErrors({
-                ...inputErrors,
-                isValidEmail: '',
-              })
-            }}
-            placeholder='Email'
-            style={loginStyles.input}
-          />
-          {isErrorView(inputErrors.isValidEmail)}
-          <Text style={loginStyles.label}>Password</Text>
-          <TextInput
-            onChangeText={(val) => {
-              setPassword(val)
-              setInputErrors({
-                ...inputErrors,
-                isValidPassword: '',
-              })
-            }}
-            style={loginStyles.input}
-            secureTextEntry={true}
-            placeholder='password'
-          />
-          {isErrorView(inputErrors.isValidPassword)}
-          <View
-            style={{
-              marginVertical: 6,
-            }}
-          >
-            <SubmitButton
-              title={loading ? 'Loading..' : 'Login'}
-              additionalSyle={{ backgroundColor: '#233d90' }}
-              colorText={{ color: 'white' }}
-              onSubmit={submitLogin}
+        <Card>
+          <Card.Title>
+            <Text style={{ fontSize: 20 }}>{isVendorLogin ? 'Vendor Login' : 'User Login'}</Text>
+          </Card.Title>
+          <Card.Divider />
+          <View style={loginStyles.form}>
+            <TouchableOpacity
+              onPress={toggleLoginType}
+              style={{ position: 'absolute', top: 10, right: 10 }}
+            >
+              <Text style={{ color: '#233d90' }}>
+                {isVendorLogin
+                  ? 'Tap here to Login as Customer'
+                  : 'Tap here to Login as Vendor'}
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={loginStyles.label}>Email</Text>
+            <TextInput
+              onChangeText={(val) => {
+                setEmail(val)
+                setInputErrors({
+                  ...inputErrors,
+                  isValidEmail: '',
+                })
+              }}
+              placeholder='Email'
+              style={loginStyles.input}
             />
+            {isErrorView(inputErrors.isValidEmail)}
+            <Text style={loginStyles.label}>Password</Text>
+            <TextInput
+              onChangeText={(val) => {
+                setPassword(val)
+                setInputErrors({
+                  ...inputErrors,
+                  isValidPassword: '',
+                })
+              }}
+              style={loginStyles.input}
+              secureTextEntry={true}
+              placeholder='password'
+            />
+            {isErrorView(inputErrors.isValidPassword)}
+            <View
+              style={{
+                marginVertical: 6,
+              }}
+            >
+              <SubmitButton
+                title={loading ? 'Loading..' : 'Login'}
+                additionalSyle={{ backgroundColor: '#233d90' }}
+                colorText={{ color: 'white' }}
+                onSubmit={submitLogin}
+              />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate(PATH.REGISTER)
+                }}
+                style={{ marginTop: 10 }}
+              >
+                <Text style={{ color: '#233d90' }}>New to Ezewa? Register here</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </Card>
       </View>
     </View>
   )

@@ -12,6 +12,18 @@ export const loginUser = createAsyncThunk('user/loginUser', async (userCredentia
   return response
 })
 
+export const registerUser = createAsyncThunk('user/registerUser', async (userCredentials) => {
+  const request = await axios.post(`${BASE_URL}/api/auth/register`, userCredentials)
+  const response = await request.data.data
+  return response
+})
+
+export const registerVendor = createAsyncThunk('user/registerVendor', async (userCredentials) => {
+  const request = await axios.post(`${BASE_URL}/api/auth/register-vendor`, userCredentials)
+  const response = await request.data.data
+  return response
+})
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -40,6 +52,16 @@ const userSlice = createSlice({
         } else {
           state.error = action.error.message
         }
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.user = action.payload
+        state.error = null
+      })
+      .addCase(registerVendor.fulfilled, (state, action) => {
+        state.loading = false
+        state.user = action.payload
+        state.error = null
       })
   },
 })
