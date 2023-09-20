@@ -20,12 +20,6 @@ export default function LoginForm() {
     isValidPassword: '',
   })
 
-  const [isVendorLogin, setIsVendorLogin] = useState(false)
-
-  const toggleLoginType = () => {
-    setIsVendorLogin(!isVendorLogin)
-  }
-
   const validateInputs = () => {
     const errors = {}
     if (email.trim() === '') {
@@ -54,29 +48,16 @@ export default function LoginForm() {
         password,
       }
 
-      if (isVendorLogin) {
-        dispatch(loginUser(userCredentials)).then((result) => {
-          if (result.payload) {
-            setEmail('')
-            setPassword('')
-            onNavigate({
-              routeName: PATH.HOME,
-              isReplace: true,
-            })
-          }
-        })
-      } else {
-        dispatch(loginUser(userCredentials)).then((result) => {
-          if (result.payload) {
-            setEmail('')
-            setPassword('')
-            onNavigate({
-              routeName: PATH.HOME,
-              isReplace: true,
-            })
-          }
-        })
-      }
+      dispatch(loginUser(userCredentials)).then((result) => {
+        if (result.payload) {
+          setEmail('')
+          setPassword('')
+          onNavigate({
+            routeName: PATH.HOME,
+            isReplace: true,
+          })
+        }
+      })
     }
   }
 
@@ -100,23 +81,10 @@ export default function LoginForm() {
       <View style={{ flex: 2, paddingHorizontal: 15 }}>
         <Card>
           <Card.Title>
-            <Text style={{ fontSize: 20 }}>
-              {isVendorLogin ? 'Vendor Login' : 'User Login'}
-            </Text>
+            <Text style={{ fontSize: 20 }}>User Login</Text>
           </Card.Title>
           <Card.Divider />
           <View style={loginStyles.form}>
-            <TouchableOpacity
-              onPress={toggleLoginType}
-              style={{ position: 'absolute', top: 10, right: 10 }}
-            >
-              <Text style={{ color: '#233d90' }}>
-                {isVendorLogin
-                  ? 'Tap here to Login as Customer'
-                  : 'Tap here to Login as Vendor'}
-              </Text>
-            </TouchableOpacity>
-
             <Text style={loginStyles.label}>Email</Text>
             <TextInput
               onChangeText={(val) => {

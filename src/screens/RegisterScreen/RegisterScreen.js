@@ -4,7 +4,7 @@ import registerStyles from './RegisterScreen.style'
 import { useNavigation } from '@react-navigation/native'
 import { useSelector, useDispatch } from 'react-redux'
 import SubmitButton from '../../shared/components/SubmitButton'
-import { registerUser, registerVendor } from '../../store/UserSlice'
+import { registerUser } from '../../store/UserSlice'
 import { onNavigate } from '../../navigation/RootNavigation'
 import { Card } from 'react-native-elements'
 import PATH from '../../navigation/NavigationPath'
@@ -19,12 +19,6 @@ export default function RegisterScreen() {
     isValidEmail: '',
     isValidPassword: '',
   })
-
-  const [isVendorRegister, setIsVendorRegister] = useState(false)
-
-  const toggleRegisterType = () => {
-    setIsVendorRegister(!isVendorRegister)
-  }
 
   const validateInputs = () => {
     const errors = {}
@@ -54,31 +48,17 @@ export default function RegisterScreen() {
         password,
       }
 
-      if (isVendorRegister) {
-        dispatch(registerVendor(userCredentials)).then((result) => {
-          if (result.payload) {
-            setEmail('')
-            setPassword('')
-            Alert.alert('Success', 'Successfully registered your vendor account!')
-            onNavigate({
-              routeName: PATH.LOGIN,
-              isReplace: true,
-            })
-          }
-        })
-      } else {
-        dispatch(registerUser(userCredentials)).then((result) => {
-          if (result.payload) {
-            setEmail('')
-            setPassword('')
-            Alert.alert('Success', 'Successfully registered your user account!')
-            onNavigate({
-              routeName: PATH.LOGIN,
-              isReplace: true,
-            })
-          }
-        })
-      }
+      dispatch(registerUser(userCredentials)).then((result) => {
+        if (result.payload) {
+          setEmail('')
+          setPassword('')
+          Alert.alert('Success', 'Successfully registered your account!')
+          onNavigate({
+            routeName: PATH.LOGIN,
+            isReplace: true,
+          })
+        }
+      })
     }
   }
 
@@ -102,23 +82,10 @@ export default function RegisterScreen() {
       <View style={{ flex: 2, paddingHorizontal: 15 }}>
         <Card>
           <Card.Title>
-            <Text style={{ fontSize: 20 }}>
-              {isVendorRegister ? 'Register Vendor' : 'Register User'}{' '}
-            </Text>
+            <Text style={{ fontSize: 20 }}>Register User</Text>
           </Card.Title>
           <Card.Divider />
           <View style={registerStyles.form}>
-            <TouchableOpacity
-              onPress={toggleRegisterType}
-              style={{ position: 'absolute', top: 10, right: 10 }}
-            >
-              <Text style={{ color: '#233d90' }}>
-                {isVendorRegister
-                  ? 'Tap here to Register as Customer'
-                  : 'Tap here to Register as Vendor'}
-              </Text>
-            </TouchableOpacity>
-
             <Text style={registerStyles.label}>Email</Text>
             <TextInput
               onChangeText={(val) => {

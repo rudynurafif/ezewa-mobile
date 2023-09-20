@@ -16,7 +16,7 @@ const AppNavigation = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName={PATH.HOME}
+        initialRouteName={PATH.SPLASH}
         screenOptions={{ contentStyle: { backgroundColor: 'white' } }}
       >
         <Stack.Screen

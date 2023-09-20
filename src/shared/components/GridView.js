@@ -13,7 +13,6 @@ import PATH from '../../navigation/NavigationPath'
 
 const GridView = ({ buildings }) => {
   // const navigation = useNavigation()
-  console.log('test grid view ', buildings)
 
   const formatPrice = (amount) => {
     const formattedAmount = new Intl.NumberFormat('id-ID', {

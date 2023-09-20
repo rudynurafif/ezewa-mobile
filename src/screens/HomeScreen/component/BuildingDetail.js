@@ -21,8 +21,6 @@ export default function BuildingDetail({ route }) {
   const [dateStart, setDateStart] = useState()
   const [selected, setSelected] = useState()
 
-//   console.log('TEST ROUTE ', route.params)
-
   const building = route.params
 
   const formatPrice = (amount) => {
