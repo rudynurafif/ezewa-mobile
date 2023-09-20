@@ -4,4 +4,5 @@ export default PATH = {
   LOGIN: 'LOGIN',
   REGISTER: 'REGISTER',
   HOME: 'HOME',
+  BUILDING_DETAIL: 'BUILDING_DETAIL',
 }

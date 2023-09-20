@@ -7,8 +7,8 @@ import store from './src/store/index'
 export default function App() {
   return (
     <SafeAreaView style={styles.container}>
-      <Provider store={store}>
-        <AppNavigation />
+      <Provider store={store} >
+        <AppNavigation sty/>
         <StatusBar style='auto' />
       </Provider>
     </SafeAreaView>
@@ -18,6 +18,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
 })
