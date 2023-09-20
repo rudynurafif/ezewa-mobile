@@ -13,6 +13,7 @@ import PATH from '../../navigation/NavigationPath'
 
 const GridView = ({ buildings }) => {
   // const navigation = useNavigation()
+  console.log('test grid view ', buildings)
 
   const formatPrice = (amount) => {
     const formattedAmount = new Intl.NumberFormat('id-ID', {
@@ -28,6 +29,7 @@ const GridView = ({ buildings }) => {
     onNavigate({
       routeName: PATH.BUILDING_DETAIL,
       isReplace: false,
+      params: building,
     })
   }
 
@@ -37,7 +39,7 @@ const GridView = ({ buildings }) => {
         <Image
           style={styles.image}
           source={{
-            uri: 'https://i.pinimg.com/originals/65/f6/69/65f669506ba37049cf41fc4a927db6f6.gif',
+            uri: 'http://10.10.100.178:8085' + item.buildingImages[0].url,
           }}
         />
 
@@ -77,7 +79,7 @@ const GridView = ({ buildings }) => {
         renderItem={renderItem}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.buildingId.toString()}
         ListEmptyComponent={renderEmptyComponent}
       />
     </View>
