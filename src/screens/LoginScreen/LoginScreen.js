@@ -65,17 +65,18 @@ export default function LoginForm() {
             })
           }
         })
+      } else {
+        dispatch(loginUser(userCredentials)).then((result) => {
+          if (result.payload) {
+            setEmail('')
+            setPassword('')
+            onNavigate({
+              routeName: PATH.HOME,
+              isReplace: true,
+            })
+          }
+        })
       }
-      dispatch(loginUser(userCredentials)).then((result) => {
-        if (result.payload) {
-          setEmail('')
-          setPassword('')
-          onNavigate({
-            routeName: PATH.HOME,
-            isReplace: true,
-          })
-        }
-      })
     }
   }
 
@@ -99,7 +100,9 @@ export default function LoginForm() {
       <View style={{ flex: 2, paddingHorizontal: 15 }}>
         <Card>
           <Card.Title>
-            <Text style={{ fontSize: 20 }}>{isVendorLogin ? 'Vendor Login' : 'User Login'}</Text>
+            <Text style={{ fontSize: 20 }}>
+              {isVendorLogin ? 'Vendor Login' : 'User Login'}
+            </Text>
           </Card.Title>
           <Card.Divider />
           <View style={loginStyles.form}>
