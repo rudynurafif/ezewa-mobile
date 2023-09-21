@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../utils/constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const getBuildings = createAsyncThunk('buildings/getBuildings', async () => {
   const response = await axios.get(`${BASE_URL}/api/buildings`)
-  // console.log(response.data.data)
 
   return response.data.data
 })

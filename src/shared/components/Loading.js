@@ -6,9 +6,10 @@ export default function Loading() {
 
     const isLoadingUser = useSelector((state) => state.user.loading)
     const isLoadingBuilding = useSelector((state) => state.building.loading)
+    const isLoadingTransactionHistory = useSelector((state) => state.transaction.loading)
 
     return (
-        (isLoadingUser || isLoadingBuilding) && (
+        (isLoadingUser || isLoadingBuilding || isLoadingTransactionHistory) && (
             <Modal transparent={true} >
                 <View style={styles.modalBackground}>
                     <ActivityIndicator size={100} color="#4b4b4b" />

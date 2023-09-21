@@ -66,7 +66,10 @@ export default function BuildingDetail({ route }) {
           <Image
             style={styles.image}
             source={{
-              uri: BASE_URL + building.buildingImages[0].url,
+              uri:
+                building.buildingImages && building.buildingImages.length > 0
+                  ? BASE_URL + building.buildingImages[0].url
+                  : 'https://miro.medium.com/v2/resize:fit:640/format:webp/1*X2vJLKG_C3AxLLJWy4YP0w.png',
             }}
           />
         </View>

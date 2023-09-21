@@ -9,6 +9,7 @@ import SplashScreen from '../screens/SplashScreen/SplashScreen'
 import LoginScreen from '../screens/LoginScreen/LoginScreen'
 import LandingScreen from '../screens/LandingScreen/LandingScreen'
 import RegisterForm from '../screens/RegisterScreen/RegisterScreen'
+import TransactionHistoryScreen from '../screens/TransactionHistoryScreen/TransactionHistoryScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -16,7 +17,7 @@ const AppNavigation = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName={PATH.SPLASH}
+        initialRouteName={PATH.TRANSACTIONS_HISTORY}
         screenOptions={{ contentStyle: { backgroundColor: 'white' } }}
       >
         <Stack.Screen
@@ -47,6 +48,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name={PATH.BUILDING_DETAIL}
           component={BuildingDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name={PATH.TRANSACTIONS_HISTORY}
+          component={TransactionHistoryScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

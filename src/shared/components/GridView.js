@@ -39,7 +39,10 @@ const GridView = ({ buildings }) => {
         <Image
           style={styles.image}
           source={{
-            uri: BASE_URL + item.buildingImages[0].url,
+            uri:
+              item.buildingImages && item.buildingImages.length > 0
+                ? BASE_URL + item.buildingImages[0].url
+                : 'https://miro.medium.com/v2/resize:fit:640/format:webp/1*X2vJLKG_C3AxLLJWy4YP0w.png',
           }}
         />
 
