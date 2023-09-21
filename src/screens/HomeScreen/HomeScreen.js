@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { Text, View, TouchableOpacity } from 'react-native'
 import { Searchbar } from 'react-native-paper'
 import GridView from '../../shared/components/GridView'
 import { homeStyles } from './HomeScreen.style'
 import { getBuildings } from '../../store/BuildingSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { MaterialIcons } from '@expo/vector-icons';
+import { onNavigate } from '../../navigation/RootNavigation'
+
+
+
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredData, setFilteredData] = useState([])
+
 
   const dispatch = useDispatch()
 
@@ -33,6 +39,9 @@ export default function HomeScreen() {
     <View style={homeStyles.container}>
       <View style={homeStyles.header}>
         <Text style={homeStyles.headerTitle}>Ezewa</Text>
+        <TouchableOpacity onPress={() => onNavigate({routeName: PATH.LANDING, isReplace: true})}>
+          <MaterialIcons name="logout" size={24} color="black" />
+        </TouchableOpacity>
       </View>
 
       <GridView buildings={filteredData.length > 0 ? filteredData : buildings} />

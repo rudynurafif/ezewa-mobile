@@ -6,10 +6,12 @@ export const homeStyles = StyleSheet.create({
         paddingTop: 35,
     },
     header: {
+        flexDirection: "row",
         height: 60,
         padding: 8,
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'baseline',
+        paddingHorizontal: 20
 
     },
     headerTitle: {
