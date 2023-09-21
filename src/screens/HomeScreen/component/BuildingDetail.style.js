@@ -2,8 +2,9 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     image: {
+        height: 300,
         width: 350,
-        aspectRatio: 1,
+        aspectRatio: 2/1,
     },
     buildingName: {
         fontWeight: 'bold',

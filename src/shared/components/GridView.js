@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import { onNavigate } from '../../navigation/RootNavigation'
 import PATH from '../../navigation/NavigationPath'
+import { BASE_URL } from '../../utils/constants'
 
 const GridView = ({ buildings }) => {
   // const navigation = useNavigation()
@@ -38,7 +39,7 @@ const GridView = ({ buildings }) => {
         <Image
           style={styles.image}
           source={{
-            uri: 'http://10.10.100.178:8085' + item.buildingImages[0].url,
+            uri: BASE_URL + item.buildingImages[0].url,
           }}
         />
 

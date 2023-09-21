@@ -1,7 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../utils/constants'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export const getBuildings = createAsyncThunk('buildings/getBuildings', async () => {
   const response = await axios.get(`${BASE_URL}/api/buildings`)
@@ -27,11 +26,15 @@ const buildingSlice = createSlice({
     error: null,
   },
   extraReducers: (builder) => {
-    builder.addCase(getBuildings.fulfilled, (state, action) => {
-      state.loading = false
-      state.buildings = action.payload
-      state.error = null
-    })
+    builder
+      .addCase(getBuildings.fulfilled, (state, action) => {
+        state.loading = false
+        state.buildings = action.payload
+        state.error = null
+      })
+      .addCase(getBuildings.pending, (state, action) => {
+        state.loading = true
+      })
   },
 })
 

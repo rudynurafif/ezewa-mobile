@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  Alert,
   Image,
   Modal,
   ScrollView,
@@ -12,6 +13,7 @@ import { Calendar } from 'react-native-calendars'
 import { styles } from './BuildingDetail.style'
 import { useSelector } from 'react-redux'
 import { getBuildingById } from '../../../store/BuildingSlice'
+import { BASE_URL } from '../../../utils/constants'
 
 export default function BuildingDetail({ route }) {
   const [visible, setVisible] = useState(false)
@@ -19,7 +21,9 @@ export default function BuildingDetail({ route }) {
   const currentDate = new Date()
   const currentDateString = currentDate.toISOString().split('T')[0]
   const [dateStart, setDateStart] = useState()
+  const [date, setDate] = useState()
   const [selected, setSelected] = useState()
+
 
   const building = route.params
 
@@ -32,19 +36,27 @@ export default function BuildingDetail({ route }) {
     return formattedAmount.replace(/\,00$/, '')
   }
 
-  const chooseDate = () => {
-    setVisible(!visible)
-  }
-
   const handleDayPress = (day) => {
     const timestampDay = day.dateString + ' ' + '00:00'
     const timestampStart = new Date(timestampDay).getTime()
 
-    const options = { year: 'numeric', month: 'long', day: 'numeric' }
-    const dateStart = new Date(timestampStart).toLocaleDateString('en-US', options)
+    if (timestampStart < currentDate.getTime()) {
+      Alert.alert('Invalid Date', 'The rental date shall not be less than or equal to the current date.')
+      return
+    }
 
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }
+    setDate(new Date(timestampStart).toLocaleDateString('en-US', options))
     setSelected(day.dateString)
-    setDateStart(dateStart)
+  }
+
+  const chooseDate = () => {
+    if (!date) {
+      Alert.alert('Invalid Date', 'Pick a Date')
+      return
+    }
+    setDateStart(date)
+    setVisible(!visible)
   }
 
   return (
@@ -54,7 +66,7 @@ export default function BuildingDetail({ route }) {
           <Image
             style={styles.image}
             source={{
-              uri: 'http://10.10.100.178:8085' + building.buildingImages[0].url,
+              uri: BASE_URL + building.buildingImages[0].url,
             }}
           />
         </View>
