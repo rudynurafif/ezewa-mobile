@@ -17,7 +17,7 @@ const AppNavigation = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName={PATH.TRANSACTIONS_HISTORY}
+        initialRouteName={PATH.SPLASH}
         screenOptions={{ contentStyle: { backgroundColor: 'white' } }}
       >
         <Stack.Screen

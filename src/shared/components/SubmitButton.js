@@ -5,7 +5,7 @@ export default function SubmitButton({ onSubmit, title, additionalSyle, colorTex
   return (
     <TouchableHighlight
       underlayColor={"#cacaca"}
-      onPress={onSubmit}
+      onPress={() => onSubmit()}
       style={[styles.button, additionalSyle]}
     >
       <Text style={colorText ? colorText : styles.text}>{title}</Text>

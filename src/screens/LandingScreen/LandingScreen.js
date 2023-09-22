@@ -25,14 +25,14 @@ const LandingScreen = () => {
       >
         <View style={styles.header}>
           <Text style={styles.title}>ezewa.</Text>
-          <TouchableOpacity style={styles.loginButton} onPress={openLogin}>
+          <TouchableOpacity style={styles.loginButton} onPress={() => openLogin()}>
             <Text style={styles.loginButtonText}>Login</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.content}>
           <Text style={styles.subTitle}>ezewa</Text>
           <Text style={styles.description}>renting has never been simpler.</Text>
-          <TouchableOpacity style={styles.getStartedButton} onPress={openGetStarted}>
+          <TouchableOpacity style={styles.getStartedButton} onPress={() => openGetStarted()}>
             <Text style={styles.getStartedButtonText}>Get Started</Text>
           </TouchableOpacity>
         </View>

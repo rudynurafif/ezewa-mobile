@@ -1,39 +1,47 @@
-import { useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useState } from 'react'
 import {
   Alert,
   Image,
+  Linking,
   Modal,
   ScrollView,
-  StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native'
 import { Calendar } from 'react-native-calendars'
-import { styles } from './BuildingDetail.style'
-import { useSelector } from 'react-redux'
-import { getBuildingById } from '../../../store/BuildingSlice'
+import { useDispatch } from 'react-redux'
+import { createTransaction } from '../../../store/TransactionSlice'
 import { BASE_URL } from '../../../utils/constants'
+import { styles } from './BuildingDetail.style'
 
 export default function BuildingDetail({ route }) {
-  const [visible, setVisible] = useState(false)
+
+  const dispatch = useDispatch()
 
   const currentDate = new Date()
   const currentDateString = currentDate.toISOString().split('T')[0]
+
+  const [visible, setVisible] = useState(false)
   const [dateStart, setDateStart] = useState()
   const [date, setDate] = useState()
   const [selected, setSelected] = useState()
-
+  const [transactionUrl, setTransactionUrl] = useState(null)
 
   const building = route.params
 
+  const clearTransactionUrl = () => {
+    setTransactionUrl(null);
+  }
+
   const formatPrice = (amount) => {
-    const formattedAmount = new Intl.NumberFormat('id-ID', {
+    const formattedPrice = new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
     }).format(amount)
 
-    return formattedAmount.replace(/\,00$/, '')
+    return formattedPrice.replace(/\,00$/, '')
   }
 
   const handleDayPress = (day) => {
@@ -45,8 +53,7 @@ export default function BuildingDetail({ route }) {
       return
     }
 
-    const options = { year: 'numeric', month: 'long', day: 'numeric' }
-    setDate(new Date(timestampStart).toLocaleDateString('en-US', options))
+    setDate(timestampStart)
     setSelected(day.dateString)
   }
 
@@ -55,8 +62,71 @@ export default function BuildingDetail({ route }) {
       Alert.alert('Invalid Date', 'Pick a Date')
       return
     }
-    setDateStart(date)
+
+    const options = { year: 'numeric', month: 'long', day: 'numeric' }
+    setDateStart(new Date(date).toLocaleDateString('en-US', options))
+
     setVisible(!visible)
+  }
+
+  const onRent = async () => {
+    if (!date) {
+      Alert.alert('Invalid Date', 'Please Pick a Date to rent')
+      return
+    }
+
+    if (transactionUrl) {
+      try {
+        const supported = await Linking.canOpenURL(transactionUrl)
+
+        if (supported) {
+          await Linking.openURL(transactionUrl)
+        } else {
+          Alert.alert(`Don't know hot to open this URL: ${transactionUrl}`)
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      return
+    }
+
+    const customerId = await AsyncStorage.getItem('id')
+    const buildingPriceId = building.buildingPriceId
+
+    const newDate = new Date(date)
+    const formattedDate = `${newDate.getFullYear()}-${(newDate.getMonth() + 1).toString().padStart(2, '0')}-${newDate.getDate().toString().padStart(2, '0')} 23:59:00`
+
+    const transaction = {
+      customerId: customerId,
+      orderDetails: [
+        {
+          buildingPriceId: buildingPriceId,
+          dateStart: formattedDate
+        }
+      ]
+    }
+
+    await dispatch(createTransaction(transaction)).then(async (result) => {
+      if (result.payload) {
+        const url = result.payload.orderMidtransResponse.redirectUrl;
+
+        try {
+          const supported = await Linking.canOpenURL(url);
+
+          if (supported) {
+            await Linking.openURL(url);
+
+            setTransactionUrl(url)
+
+            setTimeout(clearTransactionUrl, 600000)
+          } else {
+            Alert.alert(`Don't know how to open this URL: ${url}`);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })
   }
 
   return (
@@ -93,12 +163,10 @@ export default function BuildingDetail({ route }) {
             </Text>
 
             <Modal
-              animationType='slide'
+              animationType='fade'
               transparent={true}
               visible={visible}
-              onRequestClose={() => {
-                setVisible(!visible)
-              }}
+              onRequestClose={() => { setVisible(!visible) }}
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
@@ -114,15 +182,27 @@ export default function BuildingDetail({ route }) {
                     }}
                   />
 
-                  <TouchableOpacity
-                    style={[
-                      styles.pickDateBtn,
-                      { backgroundColor: '#6f6f6f', alignItems: 'center', width: '100%' },
-                    ]}
-                    onPress={chooseDate}
-                  >
-                    <Text style={{ color: 'white' }}>Choose</Text>
-                  </TouchableOpacity>
+                  <View style={{ flexDirection: 'row' }}>
+                    <TouchableOpacity
+                      style={[
+                        styles.pickDateBtn,
+                        { backgroundColor: 'white', borderWidth: 0.5, alignItems: 'center', flex: 1, marginRight: 8 },
+                      ]}
+                      onPress={() => { setVisible(!visible) }}
+                    >
+                      <Text style={{ color: '#6f6f6f' }}>Cancel</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.pickDateBtn,
+                        { backgroundColor: '#6f6f6f', alignItems: 'center', flex: 1 },
+                      ]}
+                      onPress={() => chooseDate()}
+                    >
+                      <Text style={{ color: 'white' }}>Choose</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Modal>
@@ -150,8 +230,8 @@ export default function BuildingDetail({ route }) {
           )}
         </View>
 
-        <TouchableOpacity style={styles.tabBarBtn}>
-          <Text style={styles.tabBarText}>Rent</Text>
+        <TouchableOpacity style={styles.tabBarBtn} onPress={() => onRent()}>
+          <Text style={styles.tabBarText}>{transactionUrl ? 'Pay Rent' : 'Rent'}</Text>
         </TouchableOpacity>
       </View>
     </View>

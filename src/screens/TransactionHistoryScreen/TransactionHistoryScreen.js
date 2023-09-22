@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, Image } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
+import { FlatList, Image, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { getTransactionsHistory } from '../../store/TransactionSlice'
 import { BASE_URL } from '../../utils/constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const TransactionHistory = () => {
   const dispatch = useDispatch()
@@ -13,6 +14,22 @@ const TransactionHistory = () => {
 
   const transactions = useSelector((state) => state.transaction.transactions)
 
+  const onPayRent = async (orderId) => {
+    const url = await AsyncStorage.getItem(orderId)
+
+    try {
+      const supported = await Linking.canOpenURL(url);
+
+      if (supported) {
+        await Linking.openURL(url);
+      } else {
+        Alert.alert(`Don't know how to open this URL: ${url}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Transaction History</Text>
@@ -22,36 +39,37 @@ const TransactionHistory = () => {
         <FlatList
           data={transactions}
           keyExtractor={(item) => item.orderId}
+          showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <View style={styles.transactionContainer}>
               <View style={styles.imageContainer}>
                 <Image
                   source={{
                     uri:
-                      item.buildingImages && item.buildingImages.length > 0
-                        ? BASE_URL +
-                          item.orderDetails[0].buildingResponse.buildingImages[0].url
+                      item.orderDetails[0].buildingResponse.buildingImages && item.orderDetails[0].buildingResponse.buildingImages.length > 0
+                        ? BASE_URL + item.orderDetails[0].buildingResponse.buildingImages[0].url
                         : 'https://miro.medium.com/v2/resize:fit:640/format:webp/1*X2vJLKG_C3AxLLJWy4YP0w.png',
                   }}
                   style={styles.buildingImage}
                 />
               </View>
               <View style={styles.detailsContainer}>
-                <Text style={styles.boldText}>Order ID: {item.orderId}</Text>
-                <Text style={styles.boldText}>Transaction Date: {item.transDate}</Text>
                 <Text style={styles.boldText}>Status: {item.orderDetails[0].status}</Text>
-                <Text style={styles.boldText}>
-                  Building Name: {item.orderDetails[0].buildingResponse.buildingName}
-                </Text>
-                <Text style={styles.boldText}>
-                  Price: {item.orderDetails[0].buildingResponse.price}
-                </Text>
-                <Text style={styles.boldText}>
-                  Location: {item.orderDetails[0].buildingResponse.location}
-                </Text>
-                <Text style={styles.boldText}>
-                  Vendor Email: {item.orderDetails[0].buildingResponse.vendor.email}
-                </Text>
+                <Text>{item.transDate}</Text>
+                <Text>Building Name: {item.orderDetails[0].buildingResponse.buildingName}</Text>
+                <Text>Price: {item.orderDetails[0].buildingResponse.price}</Text>
+                <Text>Location: {item.orderDetails[0].buildingResponse.location}</Text>
+                <Text>Vendor Email: {item.orderDetails[0].buildingResponse.vendor.email}</Text>
+
+                {item.orderDetails[0].status.toLowerCase() === 'pending' ?
+                  <TouchableOpacity
+                    style={styles.payBtn}
+                    onPress={() => onPayRent(item.orderId)}
+                  >
+                    <Text style={{ color: 'white' }}>Pay Rent</Text>
+                  </TouchableOpacity>
+                  : null
+                }
               </View>
             </View>
           )}
@@ -64,32 +82,34 @@ const TransactionHistory = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 8,
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 8,
     marginTop: 30,
   },
   transactionContainer: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    padding: 16,
-    marginBottom: 16,
+    padding: 6,
+    margin: 4,
     borderRadius: 8,
     elevation: 4,
   },
   imageContainer: {
-    flex: 1,
-    marginRight: 16,
+    alignItems: 'center',
+    justifyContent: 'flex-start'
   },
   detailsContainer: {
     flex: 1,
+    paddingLeft: 8,
+    justifyContent: 'flex-start'
   },
   buildingImage: {
-    width: '100%',
-    height: 200,
+    height: 120,
+    aspectRatio: 1,
     resizeMode: 'cover',
     borderRadius: 8,
     shadowColor: '#000',
@@ -99,8 +119,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-    // elevation: 4,
-    marginBottom: 8,
   },
   boldText: {
     fontWeight: 'bold',
@@ -115,6 +133,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  payBtn: {
+    backgroundColor: '#6f6f6f',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    borderWidth: 1,
+    borderColor: '#6f6f6f',
+    borderRadius: 8,
+    marginTop: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
   },
 })
 
