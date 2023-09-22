@@ -43,7 +43,7 @@ const GridView = ({ buildings }) => {
           }}
         />
 
-        <View style={{ width: 180, paddingTop: 8 }}>
+        <View style={{ flex: 1, paddingTop: 8 }}>
           <Text style={styles.buildingName}>{item.buildingName}</Text>
 
           <Text>{formatPrice(item.price)}</Text>
@@ -109,7 +109,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
   image: {
-    width: 180,
+    height: 150,
+    alignSelf: 'center',
+    borderRadius: 4,
     aspectRatio: 1,
   },
   noBuilding: {
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     paddingVertical: 2,
-    paddingHorizontal: 4,
+    paddingHorizontal: 2,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#4b4b4b',

@@ -7,8 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export const loginUser = createAsyncThunk('user/loginUser', async (userCredentials) => {
   const request = await axios.post(`${BASE_URL}/api/auth/login`, userCredentials)
   const response = await request.data.data
-  // console.log(response.token)
+  console.log(response)
   await AsyncStorage.setItem('token', response.token)
+  await AsyncStorage.setItem('id', response.id)
   return response
 })
 

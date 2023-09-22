@@ -59,6 +59,10 @@ export default function BuildingDetail({ route }) {
     setVisible(!visible)
   }
 
+  const createTransaction = () => {
+    
+  }
+
   return (
     <View style={{ flex: 1, paddingTop: 35, borderColor: 'green' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
