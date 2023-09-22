@@ -14,6 +14,16 @@ const TransactionHistory = () => {
 
   const transactions = useSelector((state) => state.transaction.transactions)
 
+  const formatPrice = (amount) => {
+    const formattedPrice = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+    }).format(amount)
+
+    return formattedPrice.replace(/\,00$/, '')
+  }
+
+
   const onPayRent = async (orderId) => {
     const url = await AsyncStorage.getItem(orderId)
 
@@ -54,10 +64,20 @@ const TransactionHistory = () => {
                 />
               </View>
               <View style={styles.detailsContainer}>
-                <Text style={styles.boldText}>Status: {item.orderDetails[0].status}</Text>
+                {/* <Text style={styles.rentSuccess}>Status: {item.orderDetails[0].status}</Text> */}
+
+                <Text>Status:
+                  {item.orderDetails[0].status.toLowerCase() === 'success' ? (
+                    <Text style={styles.rentSuccess}> SUCCESS</Text>
+                  ) : (
+                    <Text style={styles.rentPending}> PENDING</Text>
+                  )}
+                </Text>
+
                 <Text>{item.transDate}</Text>
                 <Text>Building Name: {item.orderDetails[0].buildingResponse.buildingName}</Text>
-                <Text>Price: {item.orderDetails[0].buildingResponse.price}</Text>
+                {/* <Text>Price: Rp {item.orderDetails[0].buildingResponse.price}</Text> */}
+                <Text>Price: {formatPrice(item.orderDetails[0].buildingResponse.price)}</Text>
                 <Text>Location: {item.orderDetails[0].buildingResponse.location}</Text>
                 <Text>Vendor Email: {item.orderDetails[0].buildingResponse.vendor.email}</Text>
 
@@ -120,8 +140,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
   },
-  boldText: {
-    fontWeight: 'bold',
+  rentSuccess: {
+    color: 'green',
+    marginBottom: 4,
+  },
+  rentPending: {
+    color: 'orange',
     marginBottom: 4,
   },
   loadingContainer: {
@@ -145,6 +169,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 24,
   },
+
 })
 
 export default TransactionHistory
