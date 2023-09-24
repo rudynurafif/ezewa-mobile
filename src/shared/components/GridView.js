@@ -1,19 +1,19 @@
-import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import {
   FlatList,
   Image,
-  StyleSheet,
   Text,
   TouchableWithoutFeedback,
-  View,
+  View
 } from 'react-native'
-import { onNavigate } from '../../navigation/RootNavigation'
 import PATH from '../../navigation/NavigationPath'
+import { onNavigate } from '../../navigation/RootNavigation'
 import { BASE_URL } from '../../utils/constants'
 import { styles } from './GridView.style'
 
 const GridView = ({ buildings }) => {
+
+  // console.log(buildings)
 
   const formatPrice = (amount) => {
     const formattedPrice = new Intl.NumberFormat('id-ID', {

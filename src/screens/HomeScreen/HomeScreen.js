@@ -1,37 +1,36 @@
-import React, { useEffect, useState } from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
-import { Searchbar } from 'react-native-paper'
-import GridView from '../../shared/components/GridView'
-import { homeStyles } from './HomeScreen.style'
-import { getBuildings } from '../../store/BuildingSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import { onNavigate } from '../../navigation/RootNavigation'
-import { Entypo, FontAwesome, Ionicons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons'
-import PATH from '../../navigation/NavigationPath'
+import { Entypo, FontAwesome, SimpleLineIcons } from '@expo/vector-icons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Modal } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Modal, Text, TouchableOpacity, View } from 'react-native'
+import { Searchbar } from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux'
+import PATH from '../../navigation/NavigationPath'
+import { onNavigate } from '../../navigation/RootNavigation'
+import GridView from '../../shared/components/GridView'
+import { getBuildings } from '../../store/BuildingSlice'
+import { homeStyles } from './HomeScreen.style'
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [filteredData, setFilteredData] = useState([])
   const [modalAccount, setModalAccount] = useState(false);
 
   const dispatch = useDispatch()
 
   const onChangeSearch = (query) => {
     setSearchQuery(query)
-    filterData(query)
   }
 
-  const filterData = (query) => {
-    const filtered = buildings.filter((item) =>
-      item.buildingName.toLowerCase().includes(query.toLowerCase())
-    )
-    setFilteredData(filtered)
+  const onSearch = () => {
+    dispatch(getBuildings(searchQuery))
   }
+
+  const onClearSearch = () => {
+    dispatch(getBuildings())
+  }
+
   useEffect(() => {
     dispatch(getBuildings())
-  }, [])
+  }, [buildings])
 
   const buildings = useSelector((state) => state.building.buildings)
 
@@ -96,7 +95,8 @@ export default function HomeScreen() {
         </Modal>
       </View>
 
-      <GridView buildings={filteredData.length > 0 ? filteredData : buildings} />
+      {/* <GridView buildings={filteredData.length > 0 ? filteredData : buildings} /> */}
+      <GridView buildings={buildings} />
 
       <View style={homeStyles.tabBarContainer}>
         <Searchbar
@@ -111,6 +111,8 @@ export default function HomeScreen() {
           style={{ backgroundColor: '#cbcbcb' }}
           onChangeText={onChangeSearch}
           value={searchQuery}
+          onIconPress={() => onSearch()}
+          onClearIconPress={() => onClearSearch()}
         />
       </View>
     </View>

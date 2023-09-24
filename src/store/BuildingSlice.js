@@ -2,20 +2,19 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../utils/constants'
 
-export const getBuildings = createAsyncThunk('buildings/getBuildings', async () => {
-  const response = await axios.get(`${BASE_URL}/api/buildings`)
+export const getBuildings = createAsyncThunk('buildings/getBuildings', async (query) => {
+  const response = await axios.get(`${BASE_URL}/api/buildings`, {
+    params: { buildingName: query }
+  })
 
   return response.data.data
 })
 
-export const getBuildingById = createAsyncThunk(
-  'buildings/getBuildingById',
-  async (id) => {
-    const response = await axios.get(`${BASE_URL}/api/buildings/${id}`)
+export const getBuildingById = createAsyncThunk('buildings/getBuildingById', async (id) => {
+  const response = await axios.get(`${BASE_URL}/api/buildings/${id}`)
 
-    return response.data.data
-  }
-)
+  return response.data.data
+})
 
 const buildingSlice = createSlice({
   name: 'buildings',
