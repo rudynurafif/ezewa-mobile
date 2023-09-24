@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 24,
   },
+
 })
 
 export default TransactionHistory
